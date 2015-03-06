@@ -84,10 +84,14 @@ bool debug_flag = 0;
 bool Tflag = 0;
 bool iflag = 0;
 bool count_wallclock = 0;
+bool jflag=0;
 unsigned int qflag = 0;
 static unsigned int tflag = 0;
 static bool rflag = 0;
 static bool print_pid_pfx = 0;
+
+int toggle=0;
+
 
 /* -I n */
 enum {
@@ -1464,7 +1468,7 @@ init(int argc, char *argv[])
 #endif
 	qualify("signal=all");
 	while ((c = getopt(argc, argv,
-		"+b:cCdfFhiqrtTvVwxyz"
+		"+b:cCdfFhiqrtTvVwxyzj"
 #ifdef USE_LIBUNWIND
 		"k"
 #endif
@@ -1497,6 +1501,9 @@ init(int argc, char *argv[])
 			break;
 		case 'F':
 			optF = 1;
+			break;
+		case 'j':
+			jflag=1;
 			break;
 		case 'f':
 			followfork++;
@@ -2237,6 +2244,8 @@ show_stopsig:
 	 * This should be syscall entry or exit.
 	 * Handle it.
 	 */
+	if(toggle%2==0 && jflag==1)
+		tprints("{\n");
 	if (trace_syscall(tcp) < 0) {
 		/*
 		 * ptrace() failed in trace_syscall().
@@ -2251,6 +2260,9 @@ show_stopsig:
 		 */
 		return true;
 	}
+	if(toggle%2==1 && jflag==1)
+		tprints("}\n");
+	toggle++;
 
 restart_tracee_with_sig_0:
 	sig = 0;
