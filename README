@@ -15,3 +15,178 @@ http://sourceforge.net/projects/strace/ .
 
 Please send bug reports and enhancements to the strace
 mailinglist at strace-devel@lists.sourceforge.net.
+
+
+
+{
+  "Function" : execve
+  "Arguments" : ("./a.out", ["./a.out"], [/* 75 vars */])
+  "Return" : 0
+  "TimeSpent" : 0.000466
+}
+{
+  "Function" : brk
+  "Arguments" : (0)
+   "Return" : 0x116c000
+  "TimeSpent" : 0.000057
+}
+{
+  "Function" : access
+  "Arguments" : ("/etc/ld.so.nohwcap", F_OK)
+  "Return" : -1 ENOENT (No such file or directory)
+  "TimeSpent" : 0.000032
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+  "Return" : 0x7fc31b9c3000
+  "TimeSpent" : 0.000023
+}
+{
+  "Function" : access
+  "Arguments" : ("/etc/ld.so.preload", R_OK)
+  "Return" : -1 ENOENT (No such file or directory)
+  "TimeSpent" : 0.000024
+}
+{
+  "Function" : open
+  "Arguments" : ("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC)
+  "Return" : 3
+  "TimeSpent" : 0.000053
+}
+{
+  "Function" : fstat
+  "Arguments" : (3, {st_mode=S_IFREG|0644, st_size=95090, ...})
+  "Return" : 0
+  "TimeSpent" : 0.000021
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 95090, PROT_READ, MAP_PRIVATE, 3, 0)
+  "Return" : 0x7fc31b9ab000
+  "TimeSpent" : 0.000021
+}
+{
+  "Function" : close
+  "Arguments" : (3)
+  "Return" : 0
+  "TimeSpent" : 0.000014
+}
+{
+  "Function" : access
+  "Arguments" : ("/etc/ld.so.nohwcap", F_OK)
+  "Return" : -1 ENOENT (No such file or directory)
+  "TimeSpent" : 0.000023
+}
+{
+  "Function" : open
+  "Arguments" : ("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC)
+  "Return" : 3
+  "TimeSpent" : 0.000028
+}
+{
+  "Function" : read
+  "Arguments" : (3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\37\2\0\0\0\0\0"..., 832)
+  "Return" : 832
+  "TimeSpent" : 0.000019
+}
+{
+  "Function" : fstat
+  "Arguments" : (3, {st_mode=S_IFREG|0755, st_size=1840928, ...})
+  "Return" : 0
+  "TimeSpent" : 0.000016
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 3949248, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+  "Return" : 0x7fc31b3de000
+  "TimeSpent" : 0.000020
+}
+{
+  "Function" : mprotect
+  "Arguments" : (0x7fc31b599000, 2093056, PROT_NONE)
+  "Return" : 0
+  "TimeSpent" : 0.000035
+}
+{
+  "Function" : mmap
+  "Arguments" : (0x7fc31b798000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1ba000)
+  "Return" : 0x7fc31b798000
+  "TimeSpent" : 0.000028
+}
+{
+  "Function" : mmap
+  "Arguments" : (0x7fc31b79e000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0)
+  "Return" : 0x7fc31b79e000
+  "TimeSpent" : 0.000022
+}
+{
+  "Function" : close
+  "Arguments" : (3)
+  "Return" : 0
+  "TimeSpent" : 0.000016
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+  "Return" : 0x7fc31b9aa000
+  "TimeSpent" : 0.000019
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+  "Return" : 0x7fc31b9a8000
+  "TimeSpent" : 0.000018
+}
+{
+  "Function" : arch_prctl
+  "Arguments" : (ARCH_SET_FS, 0x7fc31b9a8740)
+  "Return" : 0
+  "TimeSpent" : 0.000015
+}
+{
+  "Function" : mprotect
+  "Arguments" : (0x7fc31b798000, 16384, PROT_READ)
+  "Return" : 0
+  "TimeSpent" : 0.000024
+}
+{
+  "Function" : mprotect
+  "Arguments" : (0x600000, 4096, PROT_READ)
+  "Return" : 0
+  "TimeSpent" : 0.000019
+}
+{
+  "Function" : mprotect
+  "Arguments" : (0x7fc31b9c5000, 4096, PROT_READ)
+  "Return" : 0
+  "TimeSpent" : 0.000021
+}
+{
+  "Function" : munmap
+  "Arguments" : (0x7fc31b9ab000, 95090)
+  "Return" : 0
+  "TimeSpent" : 0.000034
+}
+{
+  "Function" : fstat
+  "Arguments" : (1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 1), ...})
+  "Return" : 0
+  "TimeSpent" : 0.000017
+}
+{
+  "Function" : mmap
+  "Arguments" : (NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+  "Return" : 0x7fc31b9c2000
+  "TimeSpent" : 0.000083
+}
+{
+  "Function" : write
+  "Arguments" : (1, "hello world\n", 12)
+  "Return" : 12
+  "TimeSpent" : 0.000047
+}
+{
+  "Function" : exit_group
+  "Arguments" : (0) = ?
++++ exited with 0 +++
