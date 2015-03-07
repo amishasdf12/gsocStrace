@@ -48,7 +48,7 @@ exit_group(0)                           = ?
 +++ exited with 0 +++
 
 
-strace -olog2 -T -J ./test
+strace -olog2 -T -j ./test
 
 in file log2 
 
