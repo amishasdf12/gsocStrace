@@ -1820,17 +1820,29 @@ trace_syscall_entering(struct tcb *tcp)
 			unwind_capture_stacktrace(tcp);
 	}
 #endif
-
 	printleader(tcp);
 	if (tcp->qual_flg & UNDEFINED_SCNO)
-		tprintf("%s(", undefined_scno_name(tcp));
+	{
+		if(jflag==1)
+			tprintf("  \"Function\" : %s\n", undefined_scno_name(tcp));
+		else
+			tprintf("%s(", undefined_scno_name(tcp));
+	}
 	else
-		tprintf("%s(", tcp->s_ent->sys_name);
+	{
+		if(jflag==1)
+			tprintf("  \"Function\" : %s\n", tcp->s_ent->sys_name);
+		else
+			tprintf("%s(", tcp->s_ent->sys_name);
+	}
+	if(jflag==1)
+		tprints("  \"Arguments\" : (");
 	if ((tcp->qual_flg & QUAL_RAW) && tcp->s_ent->sys_func != sys_exit)
+	{
 		res = printargs(tcp);
+	}
 	else
 		res = tcp->s_ent->sys_func(tcp);
-
 	fflush(tcp->outf);
  ret:
 	tcp->flags |= TCB_INSYSCALL;
@@ -2265,15 +2277,31 @@ trace_syscall_exiting(struct tcb *tcp)
 			goto ret;	/* ignore failed syscalls */
 		sys_res = tcp->s_ent->sys_func(tcp);
 	}
-
-	tprints(") ");
+	if(jflag==0)
+		tprints(") ");
+	else
+		tprints(")\n");
 	tabto();
 	u_error = tcp->u_error;
 	if (tcp->qual_flg & QUAL_RAW) {
 		if (u_error)
-			tprintf("= -1 (errno %ld)", u_error);
+		{
+			if(jflag==1)
+			{
+				tprintf("  \"Return\" : -1 (errno %ld)", u_error);
+			}
+			else
+				tprintf("= -1 (errno %ld)", u_error);
+		}
 		else
-			tprintf("= %#lx", tcp->u_rval);
+		{
+			if(jflag==1)
+			{
+				tprintf("  \"Return\" : %#lx", tcp->u_rval);
+			}
+			else
+				tprintf("= %#lx", tcp->u_rval);
+		}
 	}
 	else if (!(sys_res & RVAL_NONE) && u_error) {
 		switch (u_error) {
@@ -2331,17 +2359,30 @@ trace_syscall_exiting(struct tcb *tcp)
 			tprints("= ? ERESTART_RESTARTBLOCK (Interrupted by signal)");
 			break;
 		default:
-			if ((unsigned long) u_error < nerrnos
-			    && errnoent[u_error])
-				tprintf("= -1 %s (%s)", errnoent[u_error],
-					strerror(u_error));
+			if ((unsigned long) u_error < nerrnos && errnoent[u_error])
+			{
+				if(jflag==1)
+				{
+					tprintf("  \"Return\" : -1 %s (%s)", errnoent[u_error],strerror(u_error));
+				}
+				else
+					tprintf("= -1 %s (%s)", errnoent[u_error],strerror(u_error));
+			}
 			else
-				tprintf("= -1 ERRNO_%lu (%s)", u_error,
-					strerror(u_error));
+			{
+				if(jflag==1)
+				{
+					tprintf("  \"Return\" : -1 ERRNO_%lu (%s)", u_error,	strerror(u_error));
+				}
+				else
+					tprintf("= -1 ERRNO_%lu (%s)", u_error,	strerror(u_error));
+			}
 			break;
 		}
 		if ((sys_res & RVAL_STR) && tcp->auxstr)
+		{
 			tprintf(" (%s)", tcp->auxstr);
+		}
 	}
 	else {
 		if (sys_res & RVAL_NONE)
@@ -2351,20 +2392,46 @@ trace_syscall_exiting(struct tcb *tcp)
 			case RVAL_HEX:
 #if SUPPORTED_PERSONALITIES > 1
 				if (current_wordsize < sizeof(long))
-					tprintf("= %#x",
-						(unsigned int) tcp->u_rval);
+				{
+					if(jflag==1)
+					{
+						tprintf("  \"Return\" : %#x",(unsigned int) tcp->u_rval);
+					}
+					else
+						tprintf("= %#x",(unsigned int) tcp->u_rval);
+				}
 				else
 #endif
-					tprintf("= %#lx", tcp->u_rval);
+					if(jflag==1)
+					{
+						tprintf("  \"Return\" : %#lx",tcp->u_rval);
+					}
+					else
+						tprintf("= %#lx",tcp->u_rval);
 				break;
 			case RVAL_OCTAL:
-				tprintf("= %#lo", tcp->u_rval);
+				if(jflag==1)
+				{
+					tprintf("  \"Return\" : %#lo", tcp->u_rval);
+				}
+				else
+					tprintf("= %#lo", tcp->u_rval);
 				break;
 			case RVAL_UDECIMAL:
-				tprintf("= %lu", tcp->u_rval);
+				if(jflag==1)
+				{
+					tprintf("  \"Return\" : %lu", tcp->u_rval);
+				}
+				else
+					tprintf("= %lu", tcp->u_rval);
 				break;
 			case RVAL_DECIMAL:
-				tprintf("= %ld", tcp->u_rval);
+				if(jflag==1)
+				{
+					tprintf("  \"Return\" : %ld", tcp->u_rval);
+				}
+				else
+					tprintf("= %ld", tcp->u_rval);
 				break;
 			case RVAL_FD:
 				if (show_fd_path) {
@@ -2372,7 +2439,14 @@ trace_syscall_exiting(struct tcb *tcp)
 					printfd(tcp, tcp->u_rval);
 				}
 				else
-					tprintf("= %ld", tcp->u_rval);
+				{
+					if(jflag==1)
+					{
+						tprintf("  \"Return\" : %ld", tcp->u_rval);
+					}
+					else
+						tprintf("= %ld", tcp->u_rval);
+				}
 				break;
 #if defined(LINUX_MIPSN32) || defined(X32)
 			/*
@@ -2403,13 +2477,16 @@ trace_syscall_exiting(struct tcb *tcp)
 	}
 	if (Tflag) {
 		tv_sub(&tv, &tv, &tcp->etime);
-		tprintf(" <%ld.%06ld>",
-			(long) tv.tv_sec, (long) tv.tv_usec);
+		if(jflag==1)
+		{
+			tprintf("\n  \"TimeSpent\" : %ld.%06ld",(long) tv.tv_sec, (long) tv.tv_usec);
+		}
+		else
+			tprintf(" <%ld.%06ld>",(long) tv.tv_sec, (long) tv.tv_usec);
 	}
 	tprints("\n");
 	dumpio(tcp);
 	line_ended();
-
 #ifdef USE_LIBUNWIND
 	if (stack_trace_enabled)
 		unwind_print_stacktrace(tcp);
