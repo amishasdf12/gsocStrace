@@ -16,6 +16,21 @@ http://sourceforge.net/projects/strace/ .
 Please send bug reports and enhancements to the strace
 mailinglist at strace-devel@lists.sourceforge.net.
 
+example: 
+in file test.c
+
+#include<stdio.h>
+int main()
+{
+    printf("hello world\n");
+    return 0;
+}
+
+gcc test.c -o test
+strace -T -j -olog1 ./test
+strace -T -olog2 ./test
+
+in file log1
 
 
 {
@@ -190,3 +205,38 @@ mailinglist at strace-devel@lists.sourceforge.net.
   "Function" : exit_group
   "Arguments" : (0) = ?
 +++ exited with 0 +++
+
+
+in file log2
+
+execve("./a.out", ["./a.out"], [/* 75 vars */]) = 0 <0.000259>
+brk(0)                                  = 0x13a4000 <0.000014>
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory) <0.000016>
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f2e351ec000 <0.000014>
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory) <0.000014>
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000019>
+fstat(3, {st_mode=S_IFREG|0644, st_size=95090, ...}) = 0 <0.000012>
+mmap(NULL, 95090, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f2e351d4000 <0.000014>
+close(3)                                = 0 <0.000008>
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory) <0.000014>
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000017>
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\37\2\0\0\0\0\0"..., 832) = 832 <0.000013>
+fstat(3, {st_mode=S_IFREG|0755, st_size=1840928, ...}) = 0 <0.000010>
+mmap(NULL, 3949248, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f2e34c07000 <0.000012>
+mprotect(0x7f2e34dc2000, 2093056, PROT_NONE) = 0 <0.000016>
+mmap(0x7f2e34fc1000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1ba000) = 0x7f2e34fc1000 <0.000014>
+mmap(0x7f2e34fc7000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f2e34fc7000 <0.000012>
+close(3)                                = 0 <0.000008>
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f2e351d3000 <0.000011>
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f2e351d1000 <0.000010>
+arch_prctl(ARCH_SET_FS, 0x7f2e351d1740) = 0 <0.000008>
+mprotect(0x7f2e34fc1000, 16384, PROT_READ) = 0 <0.000013>
+mprotect(0x600000, 4096, PROT_READ)     = 0 <0.000011>
+mprotect(0x7f2e351ee000, 4096, PROT_READ) = 0 <0.000011>
+munmap(0x7f2e351d4000, 95090)           = 0 <0.000019>
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 1), ...}) = 0 <0.000010>
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f2e351eb000 <0.000011>
+write(1, "hello world\n", 12)           = 12 <0.000028>
+exit_group(0)                           = ?
++++ exited with 0 +++
+
